@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto Services - AutoSarthi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest: #0d3b2e; --forest-mid: #1a5c45; --forest-light: #2d7a5c;
+      --mint: #5effc6; --mint-soft: #a8f5d8; --mint-dim: rgba(94,255,198,0.12);
+      --surface: #f5f9f7; --surface-2: #eaf3ef;
+      --border: rgba(13,59,46,0.12); --border-strong: rgba(13,59,46,0.22);
+      --text-primary: #0d1f18; --text-secondary: #3d6458; --text-muted: #7a9e93;
+      --whatsapp: #25D366;
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px; --radius-xl: 28px;
+      --shadow-sm: 0 2px 8px rgba(13,59,46,0.08);
+      --shadow-md: 0 8px 24px rgba(13,59,46,0.12);
+      --shadow-lg: 0 20px 48px rgba(13,59,46,0.18);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --ease: 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); color: var(--text-primary); background: var(--surface); -webkit-font-smoothing: antialiased; }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,59,46,0.97); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(94,255,198,0.15);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+    }
+    .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo i { color: var(--mint); }
+    .nav-links { display: flex; gap: 2px; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius-sm); transition: var(--ease); }
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nav-links a.active { color: var(--mint); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-btn { text-decoration: none; font-size: 14px; font-weight: 500; padding: 8px 18px; border-radius: var(--radius-sm); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2); transition: var(--ease); }
+    .nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .nav-btn.register { background: var(--mint); color: var(--forest); border-color: var(--mint); font-weight: 600; }
+    .nav-btn.register:hover { background: #4ae8b0; }
+    .menu-toggle { display: none; font-size: 22px; color: #fff; cursor: pointer; }
+    .sidebar { display: none; position: fixed; top: 64px; right: 0; bottom: 0; width: 260px; background: var(--forest); padding: 20px; z-index: 99; transform: translateX(100%); transition: transform 0.3s ease; box-shadow: -4px 0 24px rgba(0,0,0,0.3); }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar a { display: block; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 15px; font-weight: 500; padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); transition: color var(--ease); }
+    .sidebar a:hover { color: var(--mint); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { background: var(--forest); padding: 48px 2rem 72px; text-align: center; position: relative; overflow: hidden; }
+    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(94,255,198,0.15) 0%, transparent 70%); pointer-events: none; }
+    .page-header h1 { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -0.5px; position: relative; }
+    .page-header h1 i { color: var(--mint); margin-right: 10px; }
+    .page-header p { color: rgba(255,255,255,0.55); font-size: 15px; margin-top: 8px; position: relative; }
+
+    /* ── SEARCH + FILTERS ── */
+    .search-section {
+      max-width: 760px; margin: -28px auto 0; padding: 0 1.5rem;
+      position: relative; z-index: 10;
+    }
+    .search-box {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; border-radius: var(--radius-xl);
+      padding: 12px 20px; box-shadow: var(--shadow-lg);
+      border: 1.5px solid var(--border);
+      transition: border-color var(--ease), box-shadow var(--ease);
+    }
+    .search-box:focus-within { border-color: var(--forest-light); box-shadow: 0 0 0 4px rgba(45,122,92,0.1), var(--shadow-lg); }
+    .search-box .search-icon { color: var(--text-muted); font-size: 16px; flex-shrink: 0; }
+    .search-box input {
+      flex: 1; border: none; outline: none;
+      font-family: var(--font-body); font-size: 15px; color: var(--text-primary);
+      background: transparent;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+    .search-clear {
+      background: var(--surface-2); border: none; border-radius: 50%;
+      width: 26px; height: 26px; display: none; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-muted); font-size: 12px; flex-shrink: 0;
+      transition: var(--ease);
+    }
+    .search-clear:hover { background: var(--border-strong); color: var(--text-primary); }
+    .search-clear.visible { display: flex; }
+
+    /* filter chips */
+    .filter-row {
+      display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+    }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      border: 1.5px solid var(--border-strong); background: #fff;
+      color: var(--text-secondary); transition: var(--ease);
+    }
+    .filter-chip:hover { border-color: var(--forest-light); color: var(--forest); }
+    .filter-chip.active { background: var(--forest); color: #fff; border-color: var(--forest); }
+    .filter-chip i { font-size: 11px; }
+
+    /* ── RESULTS META ── */
+    .results-meta {
+      max-width: 1200px; margin: 32px auto 0; padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .results-count { font-size: 13px; color: var(--text-muted); }
+    .results-count strong { color: var(--text-primary); font-weight: 600; }
+    .sort-select {
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      color: var(--text-secondary); background: #fff;
+      border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm);
+      padding: 6px 12px; outline: none; cursor: pointer; transition: var(--ease);
+    }
+    .sort-select:focus { border-color: var(--forest-light); }
+
+    /* ── SERVICE GRID ── */
+    .service-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px; max-width: 1200px; margin: 20px auto 48px; padding: 0 1.5rem;
+    }
+    .service-card { background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; transition: transform var(--ease), box-shadow var(--ease); }
+    .service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .service-card-header { background: var(--surface); padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .garage-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--forest); display: flex; align-items: center; gap: 8px; }
+    .garage-name i { color: var(--forest-light); font-size: 13px; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 100px; }
+    .badge-auto { background: #fff7ed; color: #c2410c; }
+    .service-card-body { padding: 16px 20px; }
+    .service-location { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+    .service-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .service-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 14px; }
+    .service-price { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--forest); }
+    .service-price span { font-size: 13px; font-weight: 400; font-family: var(--font-body); color: var(--text-muted); }
+    .service-card-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--font-body); font-size: 13px; font-weight: 600;
+      padding: 9px 16px; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; text-decoration: none; transition: var(--ease);
+    }
+    .btn-primary { background: var(--forest); color: #fff; }
+    .btn-primary:hover { background: var(--forest-mid); }
+    .btn-whatsapp { background: var(--whatsapp); color: #fff; }
+    .btn-whatsapp:hover { background: #1da853; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { grid-column: 1/-1; text-align: center; padding: 72px 24px; }
+    .empty-state .empty-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--mint-dim); display: grid; place-items: center; margin: 0 auto 18px; }
+    .empty-state .empty-icon i { font-size: 28px; color: var(--forest-mid); }
+    .empty-state h3 { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; color: var(--text-muted); }
+    .empty-state .try-clear { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; font-weight: 600; color: var(--forest); cursor: pointer; background: none; border: 1.5px solid var(--border-strong); padding: 7px 16px; border-radius: var(--radius-sm); transition: var(--ease); }
+    .empty-state .try-clear:hover { background: var(--surface-2); }
+
+    /* highlight match */
+    mark { background: rgba(94,255,198,0.35); color: inherit; border-radius: 2px; padding: 0 1px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .navbar { padding: 0 1rem; }
+      .nav-links, .nav-right { display: none; }
+      .menu-toggle { display: block; }
+      .sidebar { display: block; }
+      .service-grid { grid-template-columns: 1fr; }
+      .search-section { margin-top: -24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="home.html" class="logo"><i class="fa-solid fa-car-side"></i> AutoSarthi</a>
+  <div class="nav-links">
+    <a href="home.html">Home</a>
+    <a href="car-wash.html">Car Wash</a>
+    <a href="auto-services.html" class="active">Auto Services</a>
+    <a href="#">Nearby</a>
+  </div>
+  <div class="nav-right">
+    <a href="login.html" class="nav-btn">Login</a>
+    <a href="register.html" class="nav-btn register">Register</a>
+  </div>
+  <div class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
+</nav>
+<div class="sidebar" id="sidebar">
+  <a href="home.html">Home</a>
+  <a href="car-wash.html">Car Wash</a>
+  <a href="auto-services.html">Auto Services</a>
+  <a href="login.html">Login</a>
+  <a href="register.html">Register</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1><i class="fa-solid fa-screwdriver-wrench"></i> Auto Services</h1>
+  <p>Engine repair, oil changes, brake checks and more from trusted garages</p>
+</div>
+
+<!-- SEARCH + FILTERS -->
+<div class="search-section">
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    <input type="text" id="searchInput" placeholder="Search by service, garage name or city…" autocomplete="off">
+    <button class="search-clear" id="clearBtn" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="filter-row">
+    <button class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">
+      <i class="fa-solid fa-border-all"></i> All
+    </button>
+    <button class="filter-chip" data-filter="wash" onclick="setFilter('wash', this)">
+      <i class="fa-solid fa-water"></i> Car Wash
+    </button>
+    <button class="filter-chip" data-filter="engine" onclick="setFilter('engine', this)">
+      <i class="fa-solid fa-gear"></i> Engine
+    </button>
+    <button class="filter-chip" data-filter="oil" onclick="setFilter('oil', this)">
+      <i class="fa-solid fa-oil-can"></i> Oil Change
+    </button>
+    <button class="filter-chip" data-filter="brake" onclick="setFilter('brake', this)">
+      <i class="fa-solid fa-circle-stop"></i> Brakes
+    </button>
+    <button class="filter-chip" data-filter="tyre" onclick="setFilter('tyre', this)">
+      <i class="fa-solid fa-circle-dot"></i> Tyres
+    </button>
+  </div>
+</div>
+
+<!-- RESULTS META -->
+<div class="results-meta">
+  <div class="results-count" id="resultsCount"></div>
+  <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+    <option value="default">Sort: Default</option>
+    <option value="price-asc">Price: Low to High</option>
+    <option value="price-desc">Price: High to Low</option>
+    <option value="name-asc">Name: A → Z</option>
+  </select>
+</div>
+
+<!-- CARDS -->
+<div id="serviceContainer" class="service-grid"></div>
+
+<script>
+let allServices = [];
+let activeFilter = 'all';
+
+// Keyword map for filter chips
+const filterKeywords = {
+  wash:   ['wash', 'clean', 'polish', 'foam', 'rinse', 'detailing'],
+  engine: ['engine', 'motor', 'transmission', 'gearbox', 'timing'],
+  oil:    ['oil', 'lubric', 'fluid', 'filter'],
+  brake:  ['brake', 'disc', 'pad', 'caliper', 'abs'],
+  tyre:   ['tyre', 'tire', 'wheel', 'puncture', 'alignment', 'balancing']
+};
+
+function highlight(text, query) {
+  if (!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+function matchesFilter(service) {
+  if (activeFilter === 'all') return true;
+  const keywords = filterKeywords[activeFilter] || [];
+  const haystack = `${service.serviceName} ${service.description}`.toLowerCase();
+  return keywords.some(kw => haystack.includes(kw));
+}
+
+function matchesSearch(service, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  return (
+    service.serviceName.toLowerCase().includes(q) ||
+    service.description.toLowerCase().includes(q) ||
+    service.garageName.toLowerCase().includes(q) ||
+    (service.city && service.city.toLowerCase().includes(q))
+  );
+}
+
+function sortServices(list) {
+  const val = document.getElementById("sortSelect").value;
+  const sorted = [...list];
+  if (val === 'price-asc') return sorted.sort((a, b) => a.price - b.price);
+  if (val === 'price-desc') return sorted.sort((a, b) => b.price - a.price);
+  if (val === 'name-asc') return sorted.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
+  return sorted;
+}
+
+function applyFilters() {
+  const query = document.getElementById("searchInput").value.trim();
+  const clearBtn = document.getElementById("clearBtn");
+  clearBtn.classList.toggle("visible", query.length > 0);
+
+  let filtered = allServices.filter(s => matchesFilter(s) && matchesSearch(s, query));
+  filtered = sortServices(filtered);
+  renderCards(filtered, query);
+}
+
+function renderCards(data, query) {
+  const container = document.getElementById("serviceContainer");
+  const countEl = document.getElementById("resultsCount");
+  container.innerHTML = "";
+
+  if (!data.length) {
+    const msg = query
+      ? `No results for "<strong>${query}</strong>"`
+      : `No services found in this category`;
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+        <h3>Nothing found</h3>
+        <p>${msg}</p>
+        <button class="try-clear" onclick="clearSearch()"><i class="fa-solid fa-rotate-left"></i> Clear search</button>
+      </div>`;
+    countEl.innerHTML = "";
+    return;
+  }
+
+  const total = allServices.length;
+  countEl.innerHTML = `Showing <strong>${data.length}</strong> of <strong>${total}</strong> services`;
+
+  data.forEach(service => {
+    const phone = service.phone;
+    const name = highlight(service.serviceName, query);
+    const desc = highlight(service.description, query);
+    const garage = highlight(service.garageName, query);
+    const city = service.city ? `<div class="service-location"><i class="fa-solid fa-location-dot"></i>${highlight(service.city, query)}</div>` : '';
+
+    container.innerHTML += `
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="garage-name"><i class="fa-solid fa-warehouse"></i>${garage}</div>
+          <span class="badge badge-auto"><i class="fa-solid fa-wrench"></i> Auto</span>
+        </div>
+        <div class="service-card-body">
+          ${city}
+          <div class="service-title">${name}</div>
+          <div class="service-desc">${desc}</div>
+          <div class="service-price">₹${service.price} <span>onwards</span></div>
+        </div>
+        <div class="service-card-footer">
+          <a href="tel:${phone}" class="btn btn-primary" style="flex:1;justify-content:center;">
+            <i class="fa-solid fa-phone"></i> Call
+          </a>
+          <a href="https://wa.me/${phone}" target="_blank" class="btn btn-whatsapp" style="flex:1;justify-content:center;">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+          </a>
+        </div>
+      </div>`;
+  });
+}
+
+function setFilter(filter, el) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function clearSearch() {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("clearBtn").classList.remove("visible");
+  applyFilters();
+}
+
+// Fetch
+fetch("http://localhost:8080/api/public/auto-services")
+  .then(response => {
+    if (!response.ok) throw new Error("Failed to fetch");
+    return response.json();
+  })
+  .then(data => {
+    allServices = Array.isArray(data) ? data : [];
+    applyFilters();
+  })
+  .catch(() => {
+    document.getElementById("serviceContainer").innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3>Could not load services</h3>
+        <p>Please check your connection and try again.</p>
+      </div>`;
+  });
+
+document.getElementById("searchInput").addEventListener("input", applyFilters);
+
+function toggleSidebar() { document.getElementById("sidebar").classList.toggle("active"); }
+</script>
+</body>
+</html>
