@@ -129,7 +129,7 @@
 const token = localStorage.getItem("token");
 if (!token) window.location.href = "login.html";
 
-fetch("http://localhost:8080/api/mechanics/profile", {
+fetch("/api/mechanics/profile", {
   headers: { "Authorization": "Bearer " + token }
 })
 .then(r => r.json())
